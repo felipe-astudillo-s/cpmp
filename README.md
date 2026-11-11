@@ -61,3 +61,52 @@ State-Action 1
 [70 31 49 27 ]
 2,1
 ````
+
+
+---
+
+## Notes on this fork
+
+This fork of [rilianx/cpmp](https://github.com/rilianx/cpmp) is the version of the solver used for the
+FRG and BS-FRG baselines of the paper *"A Size-Independent Self-Attention Model for the Container
+Pre-Marshalling Problem"* ([OscarRojasG/CPMP-Framework](https://github.com/OscarRojasG/CPMP-Framework)).
+It differs from the original (commit `a495076`) only in `src/main_cpmp.cpp`:
+
+- `k`, the number of destination stacks tried for each single move in the beam search, is read from the
+  command line again (it was fixed to 0);
+- the optional last argument `--moves` prints the sequence of moves of the solution.
+
+`Bsg.*`, `Greedy.*` and `Layout.*` are unchanged. A `Makefile` was added.
+
+### Build
+
+```bash
+cd src
+make            # produces ./frg (Linux and macOS)
+```
+
+### Command line
+
+The command line of the current code is the one below, not the one described in the sections above:
+
+```
+./frg H instance a k max_steps beams <flag> seed [--moves]
+```
+
+- `H`: maximum height of the bay.
+- `a`: parameter of the heuristic; `k`: number of destinations considered for single moves.
+- `max_steps`: step limit of the greedy.
+- `beams`: 0 for the greedy (FRG); number of candidates for the beam search (BS-FRG).
+- `<flag>`: `--compound`, `--mixed` or `--no-assignment`. A flag must always be given, also with `beams = 0`.
+- `seed`: seed of the random tie-breaking.
+
+The output is the number of moves and the CPU time in seconds; with `--moves`, a second line
+`MOVES o,d o,d ...` lists the moves (origin and destination stack, 0-indexed).
+
+Settings of the paper, on an instance of the CV group 3-3 (`H = 5`):
+
+```bash
+./frg 5 ../Instancias/CVS/3-3/data3-3-1.dat 1.2 2 100 0 --compound 2        # FRG
+./frg 5 ../Instancias/CVS/3-3/data3-3-1.dat 1.2 3 100 1000 --mixed 2        # BS-FRG, 1,000 candidates
+./frg 5 ../Instancias/CVS/3-3/data3-3-1.dat 1.2 3 100 10000 --mixed 2       # BS-FRG, 10,000 candidates
+```
