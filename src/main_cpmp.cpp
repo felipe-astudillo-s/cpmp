@@ -55,8 +55,8 @@ int main(int argc, char * argv[]){
 
     double a = atof (argv[carg++]);
     double b = a/2;
-    int k = 0; //atoi (argv[carg++]);
-    int  max_steps = atoi(argv[carg++]); 
+    int k = atoi (argv[carg++]);
+    int  max_steps = atoi(argv[carg++]);
     
     bool assign=true;
 
