@@ -73,8 +73,14 @@ int main(int argc, char * argv[]){
 
     int seed = atoi (argv[carg++]);
     srand(seed);
-    
-    
+
+    bool print_moves = false;
+    if(argc > carg && string(argv[carg]) == "--moves"){
+        print_moves = true;
+        Layout::save_moves = true;
+        carg++;
+    }
+
     if (beams==0){
         steps = greedy_solve(L,max_steps,a,b,assign);
         
@@ -85,6 +91,16 @@ int main(int argc, char * argv[]){
         cout << argv[2] << endl;
     }*/
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
+
+    //moves se llena con push_front: el orden cronologico es rbegin->rend
+    if(print_moves){
+        Layout& sol = (beams==0)? L : best_lay;
+        cout << "MOVES";
+        if(steps > 0)
+            for(auto it = sol.moves.rbegin(); it != sol.moves.rend(); ++it)
+                cout << " " << it->first << "," << it->second;
+        cout << endl;
+    }
 
     //L.print();
 
